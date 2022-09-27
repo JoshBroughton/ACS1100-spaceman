@@ -1,4 +1,5 @@
 import random
+import re
 
 def load_word():
     '''
@@ -46,7 +47,6 @@ def get_guessed_word(secret_word, letters_guessed):
     Returns: 
         string: letters and underscores.  For letters in the word that the user has guessed correctly, the string should contain the letter at the correct position.  For letters in the word that the user has not yet guessed, shown an _ (underscore) instead.
     '''
-
     #Loop through the letters in secret word and build a string that shows the letters that have been guessed correctly so far that are saved in letters_guessed and underscores for the letters that have not been guessed yet
     outString = ''
     for letter in secret_word:
@@ -92,14 +92,14 @@ def spaceman(secret_word):
     #show the player information about the game according to the project spec
     print(f'Welcome to spaceman! Try to fill in the spaces by guessing one letter at a time. If you guess incorrectly {guess_limit} times, you lose!')
     print(f'There are {guess_limit} letters in the secret word.')
-    
+
     while not game_over:
         valid_guess = False
         while not valid_guess:
-            guess = input('Enter a single letter guess: ')
+            guess = input('Enter a single letter guess: ').lower()
             if guess in letters_guessed:
                 print('You already guessed that letter! Enter a different letter; no guess consumed.')
-            elif len(guess) == 1 and type(guess) is str:
+            elif len(guess) == 1 and re.search("[a-zA-Z]", guess):
                 valid_guess = True
             else:
                 print('Invalid guess. Single letters only! No numbers, special symbols, or words.')
