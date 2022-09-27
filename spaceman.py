@@ -89,16 +89,23 @@ def spaceman(secret_word):
     #TODO: show the player information about the game according to the project spec
     print('Welcome to spaceman! Try to fill in the spaces by guessing one letter at a time. If you guess incorrectly 8 times, you lose!')
     #TODO: Ask the player to guess one letter per round and check that it is only one letter
-    gameOver = False
-    while not gameOver:
-        validGuess = False
-        while not validGuess:
+    game_over = False
+    incorrect_guesses = 0
+    while not game_over:
+        valid_guess = False
+        while not valid_guess:
             guess = input('Enter a single letter guess: ')
             if len(guess) == 1 and type(guess) is str:
-                validGuess = True
+                valid_guess = True
             else:
                 print('Invalid guess. Single letters only! No numbers, special symbols, or words.')
+
     #TODO: Check if the guessed letter is in the secret or not and give the player feedback
+        if is_guess_in_word(guess, secret_word) == True:
+            print('You\'re guess is in the word!')
+        else:
+            print('Oh no, the guess isn\'t in the word!')
+            incorrect_guesses += 1
 
     #TODO: show the guessed word so far
 
