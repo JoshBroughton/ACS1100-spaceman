@@ -86,9 +86,9 @@ def spaceman(secret_word):
     '''
 
 
-    #TODO: show the player information about the game according to the project spec
+    #show the player information about the game according to the project spec
     print('Welcome to spaceman! Try to fill in the spaces by guessing one letter at a time. If you guess incorrectly 8 times, you lose!')
-    #TODO: Ask the player to guess one letter per round and check that it is only one letter
+    #Ask the player to guess one letter per round and check that it is only one letter
     game_over = False
     incorrect_guesses = 0
     letters_guessed = []
@@ -102,7 +102,7 @@ def spaceman(secret_word):
             else:
                 print('Invalid guess. Single letters only! No numbers, special symbols, or words.')
 
-    #TODO: Check if the guessed letter is in the secret or not and give the player feedback
+    #Check if the guessed letter is in the secret or not and give the player feedback
         if is_guess_in_word(guess, secret_word) == True:
             print('You\'re guess is in the word!')
         else:
@@ -111,18 +111,15 @@ def spaceman(secret_word):
         
         letters_guessed.append(guess)
 
-    #TODO: show the guessed word so far
+    #show the guessed word so far
         print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
-    #TODO: check if the game has been won or lost
+    #check if the game has been won or lost
         if incorrect_guesses > 7:
             print('More than 7 incorrect guesses have been made, sorry, you lose!')
             game_over = True
         elif is_word_guessed(secret_word, letters_guessed) == True:
             print('Great job, you guessed the word!')
             game_over = True
-
-
-
 
 
 #These function calls that will start the game
