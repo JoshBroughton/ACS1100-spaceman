@@ -84,14 +84,15 @@ def spaceman(secret_word):
       secret_word (string): the secret word to guess.
 
     '''
-
-
-    #show the player information about the game according to the project spec
-    print('Welcome to spaceman! Try to fill in the spaces by guessing one letter at a time. If you guess incorrectly 8 times, you lose!')
-    #Ask the player to guess one letter per round and check that it is only one letter
     game_over = False
     incorrect_guesses = 0
+    guess_limit = len(secret_word)
     letters_guessed = []
+
+    #show the player information about the game according to the project spec
+    print(f'Welcome to spaceman! Try to fill in the spaces by guessing one letter at a time. If you guess incorrectly {guess_limit} times, you lose!')
+    #Ask the player to guess one letter per round and check that it is only one letter
+    
 
     while not game_over:
         valid_guess = False
@@ -109,7 +110,7 @@ def spaceman(secret_word):
             print('You\'re guess is in the word!')
         else:
             incorrect_guesses += 1
-            print(f'Oh no, the guess isn\'t in the word! {8 - incorrect_guesses} guesses remaining.')
+            print(f'Oh no, the guess isn\'t in the word! {guess_limit - incorrect_guesses} guesses remaining.')
             
         
         letters_guessed.append(guess)
@@ -117,7 +118,7 @@ def spaceman(secret_word):
     #show the guessed word so far
         print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
     #check if the game has been won or lost
-        if incorrect_guesses > 7:
+        if incorrect_guesses >= guess_limit:
             print('More than 7 incorrect guesses have been made, sorry, you lose!')
             game_over = True
         elif is_word_guessed(secret_word, letters_guessed) == True:
