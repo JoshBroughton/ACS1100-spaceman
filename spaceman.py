@@ -110,7 +110,7 @@ def spaceman(secret_word):
             print('You\'re guess is in the word!')
         else:
             incorrect_guesses += 1
-            print(f'Oh no, the guess isn\'t in the word! {guess_limit - incorrect_guesses} guesses remaining.')
+            print(f'Oh no, the guess isn\'t in the word! {guess_limit - incorrect_guesses} incorrect guesses remaining.')
             
         
         letters_guessed.append(guess)
@@ -119,7 +119,7 @@ def spaceman(secret_word):
         print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
     #check if the game has been won or lost
         if incorrect_guesses >= guess_limit:
-            print('More than 7 incorrect guesses have been made, sorry, you lose!')
+            print(f'More than {guess_limit} incorrect guesses have been made, sorry, you lose!')
             game_over = True
         elif is_word_guessed(secret_word, letters_guessed) == True:
             print('Great job, you guessed the word!')
@@ -127,5 +127,12 @@ def spaceman(secret_word):
 
 
 #These function calls that will start the game
-secret_word = load_word()
-spaceman(secret_word)
+play_again = True
+while play_again == True:
+    secret_word = load_word()
+    spaceman(secret_word)
+    response = input('Play again with a new word? Enter 1 to play again, any other key to quit. >')
+    if response == '1':
+        play_again = True
+    else:
+        play_again = False
