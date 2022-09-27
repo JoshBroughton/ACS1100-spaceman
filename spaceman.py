@@ -97,7 +97,9 @@ def spaceman(secret_word):
         valid_guess = False
         while not valid_guess:
             guess = input('Enter a single letter guess: ')
-            if len(guess) == 1 and type(guess) is str:
+            if guess in letters_guessed:
+                print('You already guessed that letter! Enter a different letter; no guess consumed.')
+            elif len(guess) == 1 and type(guess) is str:
                 valid_guess = True
             else:
                 print('Invalid guess. Single letters only! No numbers, special symbols, or words.')
@@ -106,8 +108,9 @@ def spaceman(secret_word):
         if is_guess_in_word(guess, secret_word) == True:
             print('You\'re guess is in the word!')
         else:
-            print('Oh no, the guess isn\'t in the word!')
             incorrect_guesses += 1
+            print(f'Oh no, the guess isn\'t in the word! {8 - incorrect_guesses} guesses remaining.')
+            
         
         letters_guessed.append(guess)
 
