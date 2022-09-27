@@ -114,7 +114,12 @@ def spaceman(secret_word):
     #TODO: show the guessed word so far
         print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
     #TODO: check if the game has been won or lost
-
+        if incorrect_guesses > 7:
+            print('More than 7 incorrect guesses have been made, sorry, you lose!')
+            game_over = True
+        elif is_word_guessed(secret_word, letters_guessed) == True:
+            print('Great job, you guessed the word!')
+            game_over = True
 
 
 
