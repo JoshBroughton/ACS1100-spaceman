@@ -91,6 +91,8 @@ def spaceman(secret_word):
     #TODO: Ask the player to guess one letter per round and check that it is only one letter
     game_over = False
     incorrect_guesses = 0
+    letters_guessed = []
+
     while not game_over:
         valid_guess = False
         while not valid_guess:
@@ -106,9 +108,11 @@ def spaceman(secret_word):
         else:
             print('Oh no, the guess isn\'t in the word!')
             incorrect_guesses += 1
+        
+        letters_guessed.append(guess)
 
     #TODO: show the guessed word so far
-
+        print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
     #TODO: check if the game has been won or lost
 
 
