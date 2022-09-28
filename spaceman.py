@@ -13,7 +13,7 @@ def load_word():
     words_list = f.readlines()
     f.close()
     
-    words_list = words_list[0].split(' ') #comment this line out if you use a words.txt file with each word on a new line
+    words_list = words_list[0].split(' ')
     secret_word = random.choice(words_list)
     return secret_word
 
@@ -75,6 +75,25 @@ def is_guess_in_word(guess, secret_word):
     else:
         return False
 
+def load_sinister_word(current_word, letters_guessed):
+    #use same methods as above to open file and get list containing all the words in the file
+    f = open('words.txt', 'r')
+    words_list = f.readlines()
+    f.close()
+
+    guessed_word = get_guessed_word(current_word, letters_guessed)
+    #build a regex out of guessed_word
+    guessed_word = re.sub('_', '[a-zA-Z]', guessed_word)
+    guessed_word_regex = ' ' + guessed_word + ' '
+    
+    matches = re.findall(guessed_word_regex, words_list[0])
+    secret_word = random.choice(matches)
+    return secret_word
+
+print(load_sinister_word('goths', ['g']))
+
+
+
 
 def spaceman(secret_word):
     '''
@@ -104,7 +123,7 @@ def spaceman(secret_word):
             else:
                 print('Invalid guess. Single letters only! No numbers, special symbols, or words.')
 
-    #Check if the guessed letter is in the secret or not and give the player feedback
+        #Check if the guessed letter is in the secret or not and give the player feedback
         if is_guess_in_word(guess, secret_word) == True:
             print('You\'re guess is in the word!')
         else:
@@ -114,9 +133,9 @@ def spaceman(secret_word):
         
         letters_guessed.append(guess)
 
-    #show the guessed word so far
+        #show the guessed word so far
         print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
-    #check if the game has been won or lost
+        #check if the game has been won or lost
         if incorrect_guesses >= guess_limit:
             print(f'More than {guess_limit} incorrect guesses have been made, sorry, you lose! The word was {secret_word}')
             game_over = True
@@ -126,12 +145,12 @@ def spaceman(secret_word):
 
 
 #These function calls that will start the game
-play_again = True
-while play_again == True:
-    secret_word = load_word()
-    spaceman(secret_word)
-    response = input('Play again with a new word? Enter 1 to play again, any other key to quit. >')
-    if response == '1':
-        play_again = True
-    else:
-        play_again = False
+# play_again = True
+# while play_again == True:
+#     secret_word = load_word()
+#     spaceman(secret_word)
+#     response = input('Play again with a new word? Enter 1 to play again, any other key to quit. >')
+#     if response == '1':
+#         play_again = True
+#     else:
+#         play_again = False
