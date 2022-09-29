@@ -81,19 +81,20 @@ def load_sinister_word(current_word, letters_guessed):
     words_list = f.readlines()
     f.close()
 
+    #get the string representation of the current guess progress
     guessed_word = get_guessed_word(current_word, letters_guessed)
     #build a regex out of guessed_word
     guessed_word = re.sub('_', '[a-zA-Z]', guessed_word)
     guessed_word_regex = ' ' + guessed_word + ' '
-    
+
     matches = re.findall(guessed_word_regex, words_list[0])
-    secret_word = random.choice(matches)
+    try:
+        secret_word = random.choice(matches).strip()
+        #if the matches array is empty an error is thrown; in this case keep using the original word
+    except:
+        secret_word = current_word
+
     return secret_word
-
-print(load_sinister_word('goths', ['g']))
-
-
-
 
 def spaceman(secret_word):
     '''
@@ -107,13 +108,22 @@ def spaceman(secret_word):
     incorrect_guesses = 0
     guess_limit = len(secret_word)
     letters_guessed = []
+    is_sinister = False
 
     #show the player information about the game according to the project spec
     print(f'Welcome to spaceman! Try to fill in the spaces by guessing one letter at a time. If you guess incorrectly {guess_limit} times, you lose!')
     print(f'There are {guess_limit} letters in the secret word.')
+    play_sinister = input(f'Enter anything else for a normal game of spaceman, or 2 for a sinister game...')
+    if play_sinister == '2':
+        is_sinister = True
 
+    #primary game loop
     while not game_over:
+        print(secret_word)
+        #show the guessed word so far
+        print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
         valid_guess = False
+        #input validation, ensure guess is single letter
         while not valid_guess:
             guess = input('Enter a single letter guess: ').lower()
             if guess in letters_guessed:
@@ -123,34 +133,42 @@ def spaceman(secret_word):
             else:
                 print('Invalid guess. Single letters only! No numbers, special symbols, or words.')
 
+        #initialize correct_guess value that will be part of sinister condition
+        correct_guess = False
         #Check if the guessed letter is in the secret or not and give the player feedback
         if is_guess_in_word(guess, secret_word) == True:
             print('You\'re guess is in the word!')
+            correct_guess = True
         else:
             incorrect_guesses += 1
             print(f'Oh no, the guess isn\'t in the word! {guess_limit - incorrect_guesses} incorrect guesses remaining.')
             
-        
         letters_guessed.append(guess)
 
-        #show the guessed word so far
-        print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
+        
         #check if the game has been won or lost
         if incorrect_guesses >= guess_limit:
             print(f'More than {guess_limit} incorrect guesses have been made, sorry, you lose! The word was {secret_word}')
             game_over = True
         elif is_word_guessed(secret_word, letters_guessed) == True:
-            print('Great job, you guessed the word!')
+            print(f'Great job, you guessed the word, which was {secret_word}')
             game_over = True
+
+        #if playing sinister style, get a new word
+        if is_sinister and correct_guess:
+            secret_word = load_sinister_word(secret_word, letters_guessed)
+
+        
 
 
 #These function calls that will start the game
-# play_again = True
-# while play_again == True:
-#     secret_word = load_word()
-#     spaceman(secret_word)
-#     response = input('Play again with a new word? Enter 1 to play again, any other key to quit. >')
-#     if response == '1':
-#         play_again = True
-#     else:
-#         play_again = False
+play_again = True
+while play_again == True:
+    secret_word = load_word()
+    spaceman(secret_word)
+
+    response = input('Play again with a new word? Enter 1 to play again, any other key to quit. >')
+    if response == '1':
+        play_again = True
+    else:
+        play_again = False
