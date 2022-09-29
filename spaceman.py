@@ -76,6 +76,17 @@ def is_guess_in_word(guess, secret_word):
         return False
 
 def load_sinister_word(current_word, letters_guessed):
+    '''
+    A function that loads a new secret word, which is the same length and contains the currently
+    guessed letters as the current secret word. 
+
+    Args:
+        current_word (string): The current secret word
+        letters_guessed (list): The list of letters that have been guessed so far
+
+    Returns:
+        string: The new secret word
+    '''
     #use same methods as above to open file and get list containing all the words in the file
     f = open('words.txt', 'r')
     words_list = f.readlines()
@@ -88,9 +99,11 @@ def load_sinister_word(current_word, letters_guessed):
     guessed_word_regex = ' ' + guessed_word + ' '
 
     matches = re.findall(guessed_word_regex, words_list[0])
+
     try:
-        secret_word = random.choice(matches).strip()
-        #if the matches array is empty an error is thrown; in this case keep using the original word
+        secret_word = random.choice(matches).strip() #strip to remove leading and trailing whitespace
+        #if the matches array is empty (ie no sinister match exists) an error is thrown; 
+        #in this case keep using the original word
     except:
         secret_word = current_word
 
@@ -119,7 +132,6 @@ def spaceman(secret_word):
 
     #primary game loop
     while not game_over:
-        print(secret_word)
         #show the guessed word so far
         print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
         valid_guess = False
@@ -161,7 +173,7 @@ def spaceman(secret_word):
         
 
 
-#These function calls that will start the game
+#call the function spaceman to play the game as long as the player wants to keep playing
 play_again = True
 while play_again == True:
     secret_word = load_word()
