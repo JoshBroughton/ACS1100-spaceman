@@ -134,6 +134,7 @@ def spaceman(secret_word):
     while not game_over:
         #show the guessed word so far
         print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
+        print(f'The letters guess for far are: {", ".join(letters_guessed)}')
         valid_guess = False
         #input validation, ensure guess is single letter
         while not valid_guess:
