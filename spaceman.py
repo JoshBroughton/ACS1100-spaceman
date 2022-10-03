@@ -3,15 +3,14 @@ import re
 
 def load_word():
     '''
-    A function that reads a text file of words and randomly selects one to use as the secret word
-        from the list.
+    Reads a text file containing a list of space-separated words, 'words.txt',
+    and pseudorandomly selects one word from the list.
 
     Returns: 
            string: The secret word to be used in the spaceman guessing game
     '''
-    f = open('words.txt', 'r')
-    words_list = f.readlines()
-    f.close()
+    with open('words.txt', encoding='utf-8') as input_file:
+        words_list = input_file.readlines()
     
     words_list = words_list[0].split(' ')
     secret_word = random.choice(words_list)
@@ -45,13 +44,12 @@ def get_guessed_word(secret_word, letters_guessed):
         letters_guessed (list of strings): list of letters that have been guessed so far.
 
     Returns: 
-        string: letters and underscores.  For letters in the word that the user has guessed
-        correctly,the string should contain the letter at the correct position.  For letters
-        in the word that the user has not yet guessed, shown an _ (underscore) instead.
+        string: The guessed word with the correct guesses so far filled in, and the
+        letters that have yet be guessed replaced by underscores
     '''
-    #Loop through the letters in secret word and build a string that shows the letters 
-    # that have been guessed correctly so far that are saved in letters_guessed and underscores 
-    # for the letters that have not been guessed yet
+    #Loop through the letters in secret word and build a string that shows the letters
+    #that have been guessed correctly so far that are saved in letters_guessed and underscores
+    #for the letters that have not been guessed yet
     out_string = ''
     for letter in secret_word:
         if letter in letters_guessed:
@@ -73,11 +71,8 @@ def is_guess_in_word(guess, secret_word):
         bool: True if the guess is in the secret_word, False otherwise
 
     '''
-    if guess in secret_word:
-        return True
-    else:
-        return False
-
+    return guess in secret_word
+    
 def load_sinister_word(current_word, letters_guessed):
     '''
     A function that loads a new secret word, which is the same length and contains the currently
@@ -92,31 +87,30 @@ def load_sinister_word(current_word, letters_guessed):
         string: The new secret word
     '''
     #use same methods as above to open file and get list containing all the words in the file
-    f = open('words.txt', 'r')
-    words_list = f.readlines()
-    f.close()
-
+    with open('words.txt', encoding='utf-8') as input_file:
+        words_list = input_file.readlines()
     #get the string representation of the current guess progress
     guessed_word = get_guessed_word(current_word, letters_guessed)
     #build a regex out of guessed_word; '_" gets replaced with the regex [a-zA-Z]
     guessed_word = re.sub('_', '[a-zA-Z]', guessed_word)
     #spaces ensure don't match parts of words separated by line breaks
     guessed_word_regex = ' ' + guessed_word + ' '
-
+    #find all matching words and save them in a list
     matches = re.findall(guessed_word_regex, words_list[0])
-
+    #choose a random word from the list of matches to be the new secret word
     try:
         new_word = random.choice(matches).strip() #strip to remove leading and trailing whitespace
-        #if the matches array is empty (ie no sinister match exists) an error is thrown; 
+        #if the matches array is empty (ie no sinister match exists) an error is thrown;
         #in this case keep using the original word
-    except:
+    except IndexError:
         new_word = current_word
 
     return new_word
 
 def spaceman(secret_word):
     '''
-    A function that controls the game of spaceman. Will start spaceman in the command line.
+    A function that controls the game of spaceman. Called with a secret word
+    to initiate a game of spaceman.
 
     Args:
       secret_word (string): the secret word to guess.
@@ -130,10 +124,10 @@ def spaceman(secret_word):
 
     #show the player information about the game according to the project spec
     print('Welcome to spaceman! Try to fill in the spaces by guessing one letter at a time.' +
-        f'If you guess incorrectly {guess_limit} times, you lose!')
+          f'If you guess incorrectly {guess_limit} times, you lose!')
     print(f'There are {guess_limit} letters in the secret word.')
-    play_sinister = input('Enter anything else for a normal game of spaceman,' +
-        'or 2 for a sinister game...')
+    play_sinister = input('Enter anything else for a normal game of spaceman, ' +
+                          'or 2 for a sinister game...')
     if play_sinister == '2':
         is_sinister = True
 
@@ -161,17 +155,17 @@ def spaceman(secret_word):
             correct_guess = True
         else:
             incorrect_guesses += 1
-            print(f'Oh no, the guess isn\'t in the word! {guess_limit - incorrect_guesses} incorrect guesses remaining.') 
+            print(f'Oh no, the guess isn\'t in the word! {guess_limit - incorrect_guesses}' +
+                  ' incorrect guesses remaining.')
         
         letters_guessed.append(guess)
-
         #check if the game has been won or lost
         if incorrect_guesses >= guess_limit:
             print(f'More than {guess_limit} incorrect guesses have been made, sorry, you lose!' +
-            'The word was {secret_word}')
+                  f' The word was {secret_word}')
             game_over = True
         elif is_word_guessed(secret_word, letters_guessed) is True:
-            print(f'Great job, you guessed the word, which was {secret_word}')
+            print(f'Great job, you guessed the word, which was {secret_word}.')
             game_over = True
 
         #if playing sinister style, get a new word
@@ -179,13 +173,13 @@ def spaceman(secret_word):
             secret_word = load_sinister_word(secret_word, letters_guessed)
 
 #call the function spaceman to play the game as long as the player wants to keep playing
-play_again = True
-while play_again is True:
-    secret_word = load_word()
-    spaceman(secret_word)
 
-    response = input('Play again with a new word? Enter 1 to play again, any other key to quit. >')
-    if response == '1':
-        play_again = True
+while True:
+    HIDDEN_WORD = load_word()
+    spaceman(HIDDEN_WORD)
+
+    RESPONSE = input('Play again with a new word? Enter 1 to play again, any other key to quit. >')
+    if RESPONSE == '1':
+        continue
     else:
-        play_again = False
+        break
