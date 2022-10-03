@@ -35,27 +35,31 @@ def is_word_guessed(secret_word, letters_guessed):
     
     return True
 
-
 def get_guessed_word(secret_word, letters_guessed):
     '''
-    A function that is used to get a string showing the letters guessed so far in the secret word and underscores for letters that have not been guessed yet.
+    A function that is used to get a string showing the letters guessed so far in the
+    secret word and underscores for letters that have not been guessed yet.
 
     Args: 
         secret_word (string): the random word the user is trying to guess.
         letters_guessed (list of strings): list of letters that have been guessed so far.
 
     Returns: 
-        string: letters and underscores.  For letters in the word that the user has guessed correctly, the string should contain the letter at the correct position.  For letters in the word that the user has not yet guessed, shown an _ (underscore) instead.
+        string: letters and underscores.  For letters in the word that the user has guessed
+        correctly,the string should contain the letter at the correct position.  For letters
+        in the word that the user has not yet guessed, shown an _ (underscore) instead.
     '''
-    #Loop through the letters in secret word and build a string that shows the letters that have been guessed correctly so far that are saved in letters_guessed and underscores for the letters that have not been guessed yet
-    outString = ''
+    #Loop through the letters in secret word and build a string that shows the letters 
+    # that have been guessed correctly so far that are saved in letters_guessed and underscores 
+    # for the letters that have not been guessed yet
+    out_string = ''
     for letter in secret_word:
         if letter in letters_guessed:
-            outString += letter
+            out_string += letter
         else:
-            outString += '_'
+            out_string += '_'
 
-    return outString
+    return out_string
 
 def is_guess_in_word(guess, secret_word):
     '''
@@ -69,7 +73,6 @@ def is_guess_in_word(guess, secret_word):
         bool: True if the guess is in the secret_word, False otherwise
 
     '''
-    #check if the letter guess is in the secret word
     if guess in secret_word:
         return True
     else:
@@ -78,7 +81,8 @@ def is_guess_in_word(guess, secret_word):
 def load_sinister_word(current_word, letters_guessed):
     '''
     A function that loads a new secret word, which is the same length and contains the currently
-    guessed letters as the current secret word. 
+    guessed letters as the current secret word, in the same positions. The new word COULD contain
+    additional occurences of already guessed letters, which will be marked as guessed and filled in.
 
     Args:
         current_word (string): The current secret word
@@ -94,20 +98,21 @@ def load_sinister_word(current_word, letters_guessed):
 
     #get the string representation of the current guess progress
     guessed_word = get_guessed_word(current_word, letters_guessed)
-    #build a regex out of guessed_word
+    #build a regex out of guessed_word; '_" gets replaced with the regex [a-zA-Z]
     guessed_word = re.sub('_', '[a-zA-Z]', guessed_word)
+    #spaces ensure don't match parts of words separated by line breaks
     guessed_word_regex = ' ' + guessed_word + ' '
 
     matches = re.findall(guessed_word_regex, words_list[0])
 
     try:
-        secret_word = random.choice(matches).strip() #strip to remove leading and trailing whitespace
+        new_word = random.choice(matches).strip() #strip to remove leading and trailing whitespace
         #if the matches array is empty (ie no sinister match exists) an error is thrown; 
         #in this case keep using the original word
     except:
-        secret_word = current_word
+        new_word = current_word
 
-    return secret_word
+    return new_word
 
 def spaceman(secret_word):
     '''
@@ -124,9 +129,11 @@ def spaceman(secret_word):
     is_sinister = False
 
     #show the player information about the game according to the project spec
-    print(f'Welcome to spaceman! Try to fill in the spaces by guessing one letter at a time. If you guess incorrectly {guess_limit} times, you lose!')
+    print('Welcome to spaceman! Try to fill in the spaces by guessing one letter at a time.' +
+        f'If you guess incorrectly {guess_limit} times, you lose!')
     print(f'There are {guess_limit} letters in the secret word.')
-    play_sinister = input(f'Enter anything else for a normal game of spaceman, or 2 for a sinister game...')
+    play_sinister = input('Enter anything else for a normal game of spaceman,' +
+        'or 2 for a sinister game...')
     if play_sinister == '2':
         is_sinister = True
 
@@ -134,7 +141,7 @@ def spaceman(secret_word):
     while not game_over:
         #show the guessed word so far
         print(f'The word so far is {get_guessed_word(secret_word, letters_guessed)}')
-        print(f'The letters guess for far are: {", ".join(letters_guessed)}')
+        print(f'The letters guessed for far are: {", ".join(letters_guessed)}')
         valid_guess = False
         #input validation, ensure guess is single letter
         while not valid_guess:
@@ -149,21 +156,21 @@ def spaceman(secret_word):
         #initialize correct_guess value that will be part of sinister condition
         correct_guess = False
         #Check if the guessed letter is in the secret or not and give the player feedback
-        if is_guess_in_word(guess, secret_word) == True:
+        if is_guess_in_word(guess, secret_word) is True:
             print('You\'re guess is in the word!')
             correct_guess = True
         else:
             incorrect_guesses += 1
-            print(f'Oh no, the guess isn\'t in the word! {guess_limit - incorrect_guesses} incorrect guesses remaining.')
-            
+            print(f'Oh no, the guess isn\'t in the word! {guess_limit - incorrect_guesses} incorrect guesses remaining.') 
+        
         letters_guessed.append(guess)
 
-        
         #check if the game has been won or lost
         if incorrect_guesses >= guess_limit:
-            print(f'More than {guess_limit} incorrect guesses have been made, sorry, you lose! The word was {secret_word}')
+            print(f'More than {guess_limit} incorrect guesses have been made, sorry, you lose!' +
+            'The word was {secret_word}')
             game_over = True
-        elif is_word_guessed(secret_word, letters_guessed) == True:
+        elif is_word_guessed(secret_word, letters_guessed) is True:
             print(f'Great job, you guessed the word, which was {secret_word}')
             game_over = True
 
@@ -171,12 +178,9 @@ def spaceman(secret_word):
         if is_sinister and correct_guess:
             secret_word = load_sinister_word(secret_word, letters_guessed)
 
-        
-
-
 #call the function spaceman to play the game as long as the player wants to keep playing
 play_again = True
-while play_again == True:
+while play_again is True:
     secret_word = load_word()
     spaceman(secret_word)
 
